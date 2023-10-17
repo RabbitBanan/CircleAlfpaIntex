@@ -1,5 +1,16 @@
 ﻿namespace Circle.Lib;
 
+/*
+ * d = sqr ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
+h = sqr(r * r - (d/2) * (d/2));
+
+x01 = x1 + (x2 - x1)/2 + h * (y2 - y1) / d
+y01 = y1 + (y2 - y1)/2 - h * (x2 - x1) / d
+
+x02 = x1 + (x2 - x1)/2 - h * (y2 - y1) / d
+y02 = y1 + (y2 - y1)/2 + h * (x2 - x1) / d
+ * 
+ */
 public class Circle
 {
     // координаты двух точек
@@ -35,9 +46,10 @@ public class Circle
         double d = ToHypotenuse();
         // если середина гипотенузы больше радиуса, то окружность через две эти точки провести нельзя
         if(IsHaflHypotenuseLargeToRadius(d)) 
+            //TODO: добавить исключение 
             return;
         // находим высоту через середины гипотенузы и радиус
-        double h = ToHeight();
+        double h = ToHeight(d);
         // координаты центра окружности
         pointMiddleCircle = ToMiddleCircle(d, h);
 
@@ -64,20 +76,42 @@ public class Circle
 
     private double ToHypotenuse()
     {
-        return 0.0;
+        //d = sqr ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
+        double d = Math.Sqrt(
+                Math.Pow(pointP1.x - pointP2.x, 2) + Math.Pow(pointP1.y - pointP2.y, 2)
+            );
+        return d;
     }
 
-    private double ToHeight() {
+    private double ToHeight(double d) {
+        //h = sqr(r * r - (d/2) * (d/2));
+        double h = Math.Sqrt(
+                Math.Pow(radius, 2) + Math.Pow(d/2, 2)
+            );
         return 0.0; 
     }
 
     private Point ToMiddleCircle(double d, double h)
     {
-        return new Point();
+        /*
+         * x01 = x1 + (x2 - x1)/2 + h * (y2 - y1) / d
+         * y01 = y1 + (y2 - y1)/2 - h * (x2 - x1) / d
+         */
+        return new Point(
+            x: pointP1.x + (pointP2.x - pointP1.x) / 2 + h * (pointP2.y - pointP1.y) / d,
+            y: pointP1.y + (pointP2.y - pointP1.y) / 2 - h * (pointP2.x - pointP1.x) / d
+            );
     }
 
     private Point ToMiddleCircleStreak(double d, double h)
     {
-        return new Point();
+        /*
+         * x02 = x1 + (x2 - x1)/2 - h * (y2 - y1) / d
+         * y02 = y1 + (y2 - y1)/2 + h * (x2 - x1) / d
+         */
+        return new Point(
+            x: pointP1.x + (pointP2.x - pointP1.x) / 2 - h * (pointP2.y - pointP1.y) / d,
+            y: pointP1.y + (pointP2.y - pointP1.y) / 2 + h * (pointP2.x - pointP1.x) / d
+            );
     }
 }
