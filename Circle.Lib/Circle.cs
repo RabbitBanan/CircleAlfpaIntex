@@ -26,7 +26,7 @@ public class Circle
       * координаты две, так как радиус из точек P1 и P2 может пересекаться максимум в двух точек
       * если радиус совподает с половиной расстояние от двух точек, то точка одна
       */
-    private Point pointMiddleCircle, pointMiddleCircleStreak;
+    public Point pointO, pointOStreak;
 
     public Circle(Point pointP1, Point pointP2, double radius, bool direction, int countPoint)
     {
@@ -42,8 +42,8 @@ public class Circle
 
     private void StartCalculations()
     {
-        // находим растояние между двух точками как гипотенузу прямогоугольника
-        double d = ToHypotenuse();
+        // находим растояние между двух точками через декардовое растояние
+        double d = ToDecartDistance();
         // если середина гипотенузы больше радиуса, то окружность через две эти точки провести нельзя
         if(IsHaflHypotenuseLargeToRadius(d)) 
             //TODO: добавить исключение 
@@ -51,12 +51,13 @@ public class Circle
         // находим высоту через середины гипотенузы и радиус
         double h = ToHeight(d);
         // координаты центра окружности
-        pointMiddleCircle = ToMiddleCircle(d, h);
+        pointO = ToPointO(d, h);
 
         // А если высота равна 0????
-        // если середина гипотенузы меньше  то 
+        // если половина расстояние менешь радиуса
         if (IsHaflHypotenuseEqualToRadius(d)) 
-            pointMiddleCircleStreak = ToMiddleCircleStreak(d, h);
+            // то есть второй центр окружности
+            pointOStreak = ToPointOStreak(d, h);
       
     }
 
@@ -74,24 +75,11 @@ public class Circle
         return false;
     }
 
-    private double ToHypotenuse()
-    {
-        //d = sqr ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
-        double d = Math.Sqrt(
-                Math.Pow(pointP1.x - pointP2.x, 2) + Math.Pow(pointP1.y - pointP2.y, 2)
-            );
-        return d;
-    }
+    private double ToDecartDistance() => Calculator.ToDecartDistance(pointP1, pointP2);
 
-    private double ToHeight(double d) {
-        //h = sqr(r * r - (d/2) * (d/2));
-        double h = Math.Sqrt(
-                Math.Pow(radius, 2) + Math.Pow(d/2, 2)
-            );
-        return 0.0; 
-    }
+    private double ToHeight(double d) => Calculator.ToLegInRightTriangle(this.radius, d);
 
-    private Point ToMiddleCircle(double d, double h)
+    private Point ToPointO(double d, double h)
     {
         /*
          * x01 = x1 + (x2 - x1)/2 + h * (y2 - y1) / d
@@ -100,10 +88,10 @@ public class Circle
         return new Point(
             x: pointP1.x + (pointP2.x - pointP1.x) / 2 + h * (pointP2.y - pointP1.y) / d,
             y: pointP1.y + (pointP2.y - pointP1.y) / 2 - h * (pointP2.x - pointP1.x) / d
-            );
+        );
     }
 
-    private Point ToMiddleCircleStreak(double d, double h)
+    private Point ToPointOStreak(double d, double h)
     {
         /*
          * x02 = x1 + (x2 - x1)/2 - h * (y2 - y1) / d
@@ -112,6 +100,6 @@ public class Circle
         return new Point(
             x: pointP1.x + (pointP2.x - pointP1.x) / 2 - h * (pointP2.y - pointP1.y) / d,
             y: pointP1.y + (pointP2.y - pointP1.y) / 2 + h * (pointP2.x - pointP1.x) / d
-            );
+        );
     }
 }
