@@ -24,13 +24,13 @@ public class Calculator
     /// <summary>
     /// Функция нахождения катета в прямоугольном треугольнике
     /// </summary>
-    /// <param name="h"></param>
-    /// <param name="l"></param>
+    /// <param name="h">Гипотенуза</param>
+    /// <param name="l">Известый катет</param>
     /// <returns></returns>
     public static double ToLegInRightTriangle(double h, double l)
     {
         return Math.Sqrt(
-                 Math.Pow(h, 2) + Math.Pow(l, 2)
+                 Math.Pow(h, 2) - Math.Pow(l, 2)
             ); ;
     }
 }

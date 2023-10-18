@@ -48,14 +48,14 @@ public class Circle
         if(IsHaflHypotenuseLargeToRadius(d)) 
             //TODO: добавить исключение 
             return;
-        // находим высоту через середины гипотенузы и радиус
-        double h = ToHeight(d);
+        // находим высоту через середину декардовое растояние и радиус
+        double h = ToHeight(d/2);
         // координаты центра окружности
         pointO = ToPointO(d, h);
 
         // А если высота равна 0????
-        // если половина расстояние менешь радиуса
-        if (IsHaflHypotenuseEqualToRadius(d)) 
+        // если половина декардового растояние не равна радиуса
+        if(!IsHaflHypotenuseEqualToRadius(d)) 
             // то есть второй центр окружности
             pointOStreak = ToPointOStreak(d, h);
       
